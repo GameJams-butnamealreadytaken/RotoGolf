@@ -28,6 +28,8 @@ public class GameManager : MonoBehaviour
     public bool bGameIsOver { get; private set; }
     private bool bCanSkipToNextLevel;
 
+    private Vector2 vGamepadStickRotation;
+
     private void Start()
     {
         BallBehavior = Ball.GetComponent<BallBehavior>();
@@ -68,7 +70,7 @@ public class GameManager : MonoBehaviour
 
     public void OnLook(InputValue value)
     {
-        //TODO handle aim with gamepad
+        vGamepadStickRotation = value.Get<Vector2>();
     }
 
     public void OnReset()
@@ -142,6 +144,11 @@ public class GameManager : MonoBehaviour
         Vector2 cursor = Mouse.current.position.ReadValue();
         Vector2 ball = Camera.main.WorldToScreenPoint(Ball.transform.position);
         ball -= cursor;
+
+        if (vGamepadStickRotation.magnitude >= 0.1f)
+        {
+            ball = -vGamepadStickRotation;
+        }
 
         BallBehavior.SetArrowRotation(ball);
     }
