@@ -126,18 +126,20 @@ public class GameManager : MonoBehaviour
         if (bGameIsOver)
             return;
 
-        // Handle camera rotation
-        if (BallBehavior.CanBeShot
-            && (bRotateCameraLeftPressed || bRotateCameraRightPressed))
+        if (BallBehavior.CanBeShot)
         {
-            float fRotationFactor = bRotateCameraLeftPressed ? -1.0f : 1.0f;
-            Camera.main.transform.Rotate(new Vector3(0.0f, 0.0f, CameraRotationSpeed * fRotationFactor * Time.deltaTime));
-        }
+            // Handle camera rotation
+            if (bRotateCameraLeftPressed || bRotateCameraRightPressed)
+            {
+                float fRotationFactor = bRotateCameraLeftPressed ? -1.0f : 1.0f;
+                Camera.main.transform.Rotate(new Vector3(0.0f, 0.0f, CameraRotationSpeed * fRotationFactor * Time.deltaTime));
+            }
 
-        // Compute shot arrow length
-        if (bFirePressed)
-        {
-            BallBehavior.IncrementShotSpeed();
+            // Compute shot arrow length
+            if (bFirePressed)
+            {
+                BallBehavior.IncrementShotSpeed();
+            }
         }
 
         // Compute arrows rotation
