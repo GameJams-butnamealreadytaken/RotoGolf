@@ -263,9 +263,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c835d9d7c1708ab4093dfc12917293e3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  GameManager: {fileID: 0}
   Arrow: {fileID: 924986315326832203}
   ShotArrow: {fileID: 6603060620733614751}
   MaxSpeed: 3
+  BallShoot: {fileID: 8300000, guid: bab659d0c32bf7d478cd845d70ebedd6, type: 3}
+  HoleHit: {fileID: 8300000, guid: 74697da75dc47f743a71d6c571441dcc, type: 3}
 --- !u!58 &8976235331281929819
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -296,7 +299,7 @@ Rigidbody2D:
   m_UseAutoMass: 1
   m_Mass: 0.007853982
   m_LinearDrag: 0
-  m_AngularDrag: 3
+  m_AngularDrag: 2
   m_GravityScale: 1
   m_Material: {fileID: 6200000, guid: 7d6c3535a9a5d124db9b3836a867f628, type: 2}
   m_Interpolate: 0

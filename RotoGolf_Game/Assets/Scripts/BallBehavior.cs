@@ -4,11 +4,12 @@ using UnityEngine;
 
 public class BallBehavior : MonoBehaviour
 {
+    public GameManager GameManager;
+
     public GameObject Arrow;
     public GameObject ShotArrow;
 
     private Rigidbody2D BallBody;
-    private Vector2 vArrowDirection;
 
     public float MaxSpeed;
 
@@ -16,11 +17,14 @@ public class BallBehavior : MonoBehaviour
 
     private float fShotPower;
     private bool bTriggerShoot;
-    public bool bCanBeShot { get; private set; }
+    public bool CanBeShot { get; private set; }
 
     private float fSpeedIncrementFactor;
 
     private float fStopCounter;
+
+    public AudioClip BallShoot;
+    public AudioClip HoleHit;
 
     private void Start()
     {
@@ -28,7 +32,7 @@ public class BallBehavior : MonoBehaviour
 
         fShotPower = 0.0f;
         bTriggerShoot = false;
-        bCanBeShot = false;
+        CanBeShot = false;
         fStopCounter = 0.0f;
 
         fSpeedIncrementFactor = 1.0f;
@@ -54,7 +58,7 @@ public class BallBehavior : MonoBehaviour
 
     public void Shoot()
     {
-        if (!bCanBeShot)
+        if (!CanBeShot)
             return;
 
         bTriggerShoot = true;
@@ -64,14 +68,14 @@ public class BallBehavior : MonoBehaviour
     public void SetArrowRotation(Vector2 vDirection)
     {
         // From normalize dir vector (ball - cursor) then get angle in degree to set object rotation
-        // Substract 90 to have the right angle because..?
-
-        vArrowDirection = vDirection.normalized;
+        // + take camera rotation into account
 
         float fAngle = Mathf.Atan2(vDirection.y, vDirection.x) * Mathf.Rad2Deg;
 
         Vector3 rotation = Arrow.transform.eulerAngles;
-        rotation.z = fAngle - 90.0f;
+        rotation.z = fAngle;
+
+        rotation.z += Camera.main.transform.rotation.eulerAngles.z - 90.0f;
 
         Arrow.transform.eulerAngles = rotation;
         ShotArrow.transform.eulerAngles = rotation;
@@ -79,7 +83,7 @@ public class BallBehavior : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!bCanBeShot)
+        if (!CanBeShot)
         {
             float vSpeed = BallBody.velocity.magnitude;
             if (vSpeed < 0.2f)
@@ -105,7 +109,7 @@ public class BallBehavior : MonoBehaviour
         else if (bTriggerShoot)
         {
             BallBody.gravityScale = 1.0f;
-            BallBody.AddForce(vArrowDirection * fShotPower);
+            BallBody.AddForce(Arrow.transform.up * fShotPower);
 
             OnShoot();
         }
@@ -113,9 +117,11 @@ public class BallBehavior : MonoBehaviour
 
     private void OnShoot()
     {
+        GameManager.PlayAudioClip(BallShoot);
+
         Arrow.SetActive(false);
         ShotArrow.SetActive(false);
-        bCanBeShot = false;
+        CanBeShot = false;
 
         bTriggerShoot = false;
 
@@ -130,8 +136,25 @@ public class BallBehavior : MonoBehaviour
 
     private void OnStop()
     {
-        bCanBeShot = true;
+        CanBeShot = true;
         Arrow.SetActive(true);
         ShotArrow.SetActive(true);
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Environment"))
+        {
+            //TODO play ground hit sound
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag("HoleBallDetector"))
+        {
+            GameManager.PlayAudioClip(HoleHit);
+            GameManager.OnBallHitHole();
+        }
     }
 }
