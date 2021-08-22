@@ -29,6 +29,7 @@ public class BallBehavior : MonoBehaviour
     private void Start()
     {
         BallBody = GetComponent<Rigidbody2D>();
+        BallBody.gravityScale = 0.0f;
 
         fShotPower = 0.0f;
         bTriggerShoot = false;
@@ -44,7 +45,7 @@ public class BallBehavior : MonoBehaviour
 
     public void IncrementShotSpeed()
     {
-        fShotPower += 0.005f * fSpeedIncrementFactor;
+        fShotPower += 3.0f * fSpeedIncrementFactor * Time.deltaTime;
 
         if (fShotPower > MaxSpeed || fShotPower <= 0.0f)
         {
@@ -136,6 +137,10 @@ public class BallBehavior : MonoBehaviour
 
     private void OnStop()
     {
+        // Check if ball already hit the hole, avoid enablin arrows then
+        if (GameManager.bGameIsOver)
+            return;
+
         CanBeShot = true;
         Arrow.SetActive(true);
         ShotArrow.SetActive(true);

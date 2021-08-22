@@ -25,7 +25,7 @@ public class GameManager : MonoBehaviour
     private bool bRotateCameraLeftPressed;
     private bool bRotateCameraRightPressed;
 
-    private bool bGameIsOver;
+    public bool bGameIsOver { get; private set; }
     private bool bCanSkipToNextLevel;
 
     private void Start()
@@ -95,7 +95,7 @@ public class GameManager : MonoBehaviour
             return;
         }
 
-        if (bFirePressed)
+        if (BallBehavior.CanBeShot && bFirePressed)
         {
             // Set world gravity only on shot since we don't want te ball to move before
             Vector3 newGavrity = Camera.main.transform.up * -GravityFactor;
